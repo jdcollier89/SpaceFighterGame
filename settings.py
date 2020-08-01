@@ -1,4 +1,4 @@
-class Settings():
+class Settings:
     """A class to store all settings for Space Fighter"""
 
     def __init__(self):
@@ -18,7 +18,7 @@ class Settings():
         self.bullets_allowed = 3
 
         # Alien Settings
-        self.fleet_drop_speed = 100
+        self.fleet_drop_speed = 10
 
         # How quickly the game speeds up
         self.speedup_scale = 1.1

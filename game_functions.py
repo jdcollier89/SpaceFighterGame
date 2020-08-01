@@ -17,10 +17,7 @@ def start_game(ai_settings, screen, stats, sb, ship, aliens, bullets):
     stats.game_active = True
 
     # Reset the scoreboard images
-    sb.prep_score()
-    sb.prep_high_score()
-    sb.prep_level()
-    sb.prep_ships()
+    sb.prep_images()
 
     # Empty the list of aliens and bullets
     aliens.empty()
@@ -31,9 +28,23 @@ def start_game(ai_settings, screen, stats, sb, ship, aliens, bullets):
     ship.center_ship()
 
 
+def start_new_level(ai_settings, screen, stats, sb, ship,
+                    aliens, bullets):
+    """Start a new level once all enemies cleared"""
+    # Destroy existing bullets, speed up game, and create a new fleet
+    bullets.empty()
+    ai_settings.increase_speed()
+
+    # Increase level
+    stats.level += 1
+    sb.prep_level()
+
+    create_fleet(ai_settings, screen, ship, aliens)
+
+
 def check_keydown_events(event, ai_settings, screen, stats, sb, ship, aliens,
                          bullets):
-    """Respond to keypresses"""
+    """Respond to key presses"""
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
     elif event.key == pygame.K_LEFT:
@@ -46,14 +57,6 @@ def check_keydown_events(event, ai_settings, screen, stats, sb, ship, aliens,
         sys.exit()
 
 
-def fire_bullet(ai_settings, screen, ship, bullets):
-    """Fire a bullet if limit not reached yet"""
-    # Create a new bullet and add to the group
-    if len(bullets) < ai_settings.bullets_allowed:
-        new_bullet = Bullet(ai_settings, screen, ship)
-        bullets.add(new_bullet)
-
-
 def check_keyup_events(event, ship):
     """Respond to key releases"""
     if event.key == pygame.K_RIGHT:
@@ -62,9 +65,26 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
+def fire_bullet(ai_settings, screen, ship, bullets):
+    """Fire a bullet if limit not reached yet"""
+    # Create a new bullet and add to the group
+    if len(bullets) < ai_settings.bullets_allowed:
+        new_bullet = Bullet(ai_settings, screen, ship)
+        bullets.add(new_bullet)
+
+
+def check_play_button(ai_settings, screen, stats, sb, play_button, ship,
+                      aliens, bullets, mouse_x, mouse_y):
+    """Start a new game when the player click Play button"""
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+        ai_settings.initialize_dynamic_settings()
+        start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
+
+
 def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens,
                  bullets):
-    """Respond to keypresses and mouse events"""
+    """Respond to key presses and mouse events"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
@@ -77,17 +97,6 @@ def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens,
             mouse_x, mouse_y = pygame.mouse.get_pos()
             check_play_button(ai_settings, screen, stats, sb, play_button,
                               ship, aliens, bullets, mouse_x, mouse_y)
-
-
-def check_play_button(ai_settings, screen, stats, sb, play_button, ship,
-                      aliens, bullets, mouse_x, mouse_y):
-    """Start a new game when the player click Play button"""
-    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
-    if button_clicked and not stats.game_active:
-        # Reset the game settings
-        ai_settings.initialize_dynamic_settings()
-
-        start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
 
 
 def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets,
@@ -139,15 +148,8 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship,
         check_high_score(stats, sb)
 
     if len(aliens) == 0:
-        # Destroy existing bullets, speed up game, and create a new fleet
-        bullets.empty()
-        ai_settings.increase_speed()
-
-        # Increase level
-        stats.level += 1
-        sb.prep_level()
-
-        create_fleet(ai_settings, screen, ship, aliens)
+        start_new_level(ai_settings, screen, stats, sb, ship,
+                        aliens, bullets)
 
 
 def get_number_aliens_x(ai_settings, alien_width):
