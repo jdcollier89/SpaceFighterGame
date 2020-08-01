@@ -8,6 +8,7 @@ class GameStats():
 
         # Start game in inactive state
         self.game_active = False
+        self.level_begun = False # If mid-game this will be true; needed for pausing
 
         # High score should never be reset
         self.high_score = 0

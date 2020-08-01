@@ -9,23 +9,25 @@ from alien import Alien
 
 def start_game(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """Start a new game"""
-    # Hide the mouse cursor
-    pygame.mouse.set_visible(False)
+    if not stats.game_active and not stats.level_begun:
+        # Hide the mouse cursor
+        pygame.mouse.set_visible(False)
 
-    # Reset the games stats
-    stats.reset_stats()
-    stats.game_active = True
+        # Reset the games stats
+        stats.reset_stats()
+        stats.game_active = True
+        stats.level_begun = True
 
-    # Reset the scoreboard images
-    sb.prep_images()
+        # Reset the scoreboard images
+        sb.prep_images()
 
-    # Empty the list of aliens and bullets
-    aliens.empty()
-    bullets.empty()
+        # Empty the list of aliens and bullets
+        aliens.empty()
+        bullets.empty()
 
-    # Create a new fleet and center the ship
-    create_fleet(ai_settings, screen, ship, aliens)
-    ship.center_ship()
+        # Create a new fleet and center the ship
+        create_fleet(ai_settings, screen, ship, aliens)
+        ship.center_ship()
 
 
 def start_new_level(ai_settings, screen, stats, sb, ship,
@@ -42,8 +44,21 @@ def start_new_level(ai_settings, screen, stats, sb, ship,
     create_fleet(ai_settings, screen, ship, aliens)
 
 
+def pause_game(stats, splash_screen):
+    if stats.level_begun:
+        if not stats.game_active:
+            # Set game to inactive & update splash screen message
+            stats.game_active = True
+            pygame.mouse.set_visible(False)
+        else:
+            # Set game to active, and begin play again
+            stats.game_active = False
+            pygame.mouse.set_visible(True)
+            splash_screen.prep_pause_screen()
+
+
 def check_keydown_events(event, ai_settings, screen, stats, sb, ship, aliens,
-                         bullets):
+                         bullets, splash_screen):
     """Respond to key presses"""
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
@@ -53,6 +68,8 @@ def check_keydown_events(event, ai_settings, screen, stats, sb, ship, aliens,
         fire_bullet(ai_settings, screen, ship, bullets)
     elif event.key == pygame.K_p:
         start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
+    elif event.key == pygame.K_ESCAPE:
+        pause_game(stats, splash_screen)
     elif event.key == pygame.K_q:
         sys.exit()
 
@@ -83,14 +100,14 @@ def check_play_button(ai_settings, screen, stats, sb, play_button, ship,
 
 
 def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens,
-                 bullets):
+                 bullets, splash_screen):
     """Respond to key presses and mouse events"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(event, ai_settings, screen, stats, sb, ship, aliens,
-                                 bullets)
+                                 bullets, splash_screen)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -116,7 +133,8 @@ def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets,
 
     # Draw the play button if the game is inactive
     if not stats.game_active:
-        play_button.draw_button()
+        if not stats.level_begun:
+            play_button.draw_button()
         splash_screen.draw_splash_screen()
 
     # Make the most recently drawn screen visible
@@ -230,6 +248,7 @@ def ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets, splash_scree
         sleep(0.5)
     else:
         stats.game_active = False
+        stats.level_begun = False
         pygame.mouse.set_visible(True)
         splash_screen.prep_game_over()
 
