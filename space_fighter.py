@@ -7,6 +7,7 @@ from scoreboard import Scoreboard
 from button import Button
 from splash_screen import SplashScreen
 from ship import Ship
+from background import Background
 import game_functions as gf
 
 
@@ -17,6 +18,9 @@ def run_game():
     screen = pygame.display.set_mode((
         ai_settings.screen_width, ai_settings.screen_height))
     pygame.display.set_caption('Space Fighter')
+
+    # Set the background
+    background = Background(screen, ai_settings)
 
     # Make the play button
     play_button = Button(ai_settings, screen, "Play")
@@ -48,7 +52,7 @@ def run_game():
                              bullets, splash_screen)
 
         gf.update_screen(ai_settings, screen, stats, sb, ship, aliens,
-                         bullets, play_button, splash_screen)
+                         bullets, play_button, splash_screen, background)
 
         # Make the most recently drawn screen visible
         pygame.display.flip()

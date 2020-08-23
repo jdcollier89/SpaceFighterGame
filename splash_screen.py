@@ -21,7 +21,7 @@ class SplashScreen:
     def prep_instructions(self, instructions_str):
         """Generate message on how to start game"""
         self.insturctions_image = self.font_small.render(instructions_str, True,
-                                self.text_color, self.ai_settings.bg_color)
+                                self.text_color)
 
         self.insturctions_rect = self.insturctions_image.get_rect()
         self.insturctions_rect.centerx = self.screen_rect.centerx
