@@ -11,7 +11,7 @@ class SplashScreen:
         self.ai_settings = ai_settings
 
         # Font settings
-        self.text_color = (30, 30, 30)
+        self.text_color = (250, 250, 250)
         self.font_big = pygame.font.SysFont(None, 88)
         self.font_small = pygame.font.SysFont(None, 28)
 
