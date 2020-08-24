@@ -23,7 +23,8 @@ def run_game():
     background = Background(screen, ai_settings)
 
     # Make the play button
-    play_button = Button(ai_settings, screen, "Play")
+    play_button = Button(screen, "Play", "g")
+    quit_button = Button(screen, "Quit", "r")
     splash_screen = SplashScreen(screen, ai_settings)
 
     # Create an instance to store game stats & create a scoreboard
@@ -41,7 +42,7 @@ def run_game():
 
     # Start the main loop for the game
     while True:
-        gf.check_events(ai_settings, screen, stats, sb, play_button, ship,
+        gf.check_events(ai_settings, screen, stats, sb, play_button, quit_button, ship,
                         aliens, bullets, splash_screen)
 
         if stats.game_active:
@@ -52,7 +53,7 @@ def run_game():
                              bullets, splash_screen)
 
         gf.update_screen(ai_settings, screen, stats, sb, ship, aliens,
-                         bullets, play_button, splash_screen, background)
+                         bullets, play_button, quit_button, splash_screen, background)
 
         # Make the most recently drawn screen visible
         pygame.display.flip()

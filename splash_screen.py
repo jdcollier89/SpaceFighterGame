@@ -11,12 +11,19 @@ class SplashScreen:
         self.ai_settings = ai_settings
 
         # Font settings
+        self.title_color = (50, 50, 50)
         self.text_color = (250, 250, 250)
         self.font_big = pygame.font.SysFont(None, 88)
         self.font_small = pygame.font.SysFont(None, 28)
 
-        # Prep messages
+        self.prep_banner()
         self.prep_open_screen()
+
+    def prep_banner(self):
+        self.banner_img = pygame.image.load('images/banner.png').convert_alpha()
+        self.banner_rect = self.banner_img.get_rect()
+        self.banner_rect.centerx = self.screen_rect.centerx
+        self.banner_rect.centery = self.screen_rect.centery - 120
 
     def prep_instructions(self, instructions_str):
         """Generate message on how to start game"""
@@ -51,7 +58,7 @@ class SplashScreen:
     def set_headline(self, input_str):
         """Set the contents and position of headline text"""
         self.headline_image = self.font_big.render(input_str, True,
-                                                   self.text_color)
+                                                   self.title_color)
 
         self.headline_rect = self.headline_image.get_rect()
         self.headline_rect.centerx = self.screen_rect.centerx
@@ -59,5 +66,6 @@ class SplashScreen:
 
     def draw_splash_screen(self):
         """Draw all splash screen contents"""
+        self.screen.blit(self.banner_img, self.banner_rect)
         self.screen.blit(self.headline_image, self.headline_rect)
         self.screen.blit(self.insturctions_image, self.insturctions_rect)

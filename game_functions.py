@@ -57,6 +57,10 @@ def pause_game(stats, splash_screen):
             splash_screen.prep_pause_screen()
 
 
+def quit_game():
+    sys.exit()
+
+
 def check_keydown_events(event, ai_settings, screen, stats, sb, ship, aliens,
                          bullets, splash_screen):
     """Respond to key presses"""
@@ -71,7 +75,7 @@ def check_keydown_events(event, ai_settings, screen, stats, sb, ship, aliens,
     elif event.key == pygame.K_ESCAPE:
         pause_game(stats, splash_screen)
     elif event.key == pygame.K_q:
-        sys.exit()
+        quit_game()
 
 
 def check_keyup_events(event, ship):
@@ -90,8 +94,8 @@ def fire_bullet(ai_settings, screen, ship, bullets):
         bullets.add(new_bullet)
 
 
-def check_play_button(ai_settings, screen, stats, sb, play_button, ship,
-                      aliens, bullets, mouse_x, mouse_y):
+def check_play_button(ai_settings, screen, stats, sb, play_button,
+                      ship, aliens, bullets, mouse_x, mouse_y):
     """Start a new game when the player click Play button"""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
@@ -99,8 +103,16 @@ def check_play_button(ai_settings, screen, stats, sb, play_button, ship,
         start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
 
 
-def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens,
-                 bullets, splash_screen):
+def check_quit_button(ai_settings, stats, quit_button, mouse_x, mouse_y):
+    """Start a new game when the player click Play button"""
+    button_clicked = quit_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+        ai_settings.initialize_dynamic_settings()
+        quit_game()
+
+
+def check_events(ai_settings, screen, stats, sb, play_button, quit_button,
+                 ship, aliens, bullets, splash_screen):
     """Respond to key presses and mouse events"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -114,10 +126,11 @@ def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens,
             mouse_x, mouse_y = pygame.mouse.get_pos()
             check_play_button(ai_settings, screen, stats, sb, play_button,
                               ship, aliens, bullets, mouse_x, mouse_y)
+            check_quit_button(ai_settings, stats, quit_button, mouse_x, mouse_y)
 
 
 def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets,
-                  play_button, splash_screen, background):
+                  play_button, quit_button, splash_screen, background):
     """Update images on the screen and flip to the new screen"""
 
     # Redraw the screen during each pass through the loop
@@ -136,6 +149,7 @@ def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets,
     if not stats.game_active:
         if not stats.level_begun:
             play_button.draw_button()
+            quit_button.draw_button()
         splash_screen.draw_splash_screen()
 
     # Make the most recently drawn screen visible
