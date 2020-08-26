@@ -9,6 +9,7 @@ from splash_screen import SplashScreen
 from ship import Ship
 from background import Background
 import game_functions as gf
+import check_event_functions as ce
 
 
 def run_game():
@@ -22,7 +23,7 @@ def run_game():
     # Set the background
     background = Background(screen, ai_settings)
 
-    # Make the play button
+    # Make the buttons and splash screen
     play_button = Button(screen, "Play", "g")
     quit_button = Button(screen, "Quit", "r")
     splash_screen = SplashScreen(screen, ai_settings)
@@ -33,7 +34,8 @@ def run_game():
 
     # Make a ship
     ship = Ship(ai_settings, screen)
-    # Make a group to store bullets in
+
+    # Make a group to store bullets & aliens in
     bullets = Group()
     aliens = Group()
 
@@ -42,7 +44,7 @@ def run_game():
 
     # Start the main loop for the game
     while True:
-        gf.check_events(ai_settings, screen, stats, sb, play_button, quit_button, ship,
+        ce.check_events(ai_settings, screen, stats, sb, play_button, quit_button, ship,
                         aliens, bullets, splash_screen)
 
         if stats.game_active:
@@ -52,7 +54,7 @@ def run_game():
             gf.update_aliens(ai_settings, screen, stats, sb, ship, aliens,
                              bullets, splash_screen)
 
-        gf.update_screen(ai_settings, screen, stats, sb, ship, aliens,
+        gf.update_screen(screen, stats, sb, ship, aliens,
                          bullets, play_button, quit_button, splash_screen, background)
 
         # Make the most recently drawn screen visible

@@ -16,7 +16,7 @@ class SplashScreen:
         self.font_big = pygame.font.SysFont(None, 88)
         self.font_small = pygame.font.SysFont(None, 28)
 
-        self.open_flag = 1
+        self.open_flag = 1 # Flag indicates whether splash screen is opening screen or not
 
         self.prep_banner()
         self.prep_banner_mid()
@@ -26,13 +26,13 @@ class SplashScreen:
         self.banner_img = pygame.image.load('images/banner.png').convert_alpha()
         self.banner_rect = self.banner_img.get_rect()
         self.banner_rect.centerx = self.screen_rect.centerx
-        self.banner_rect.centery = self.screen_rect.centery - 120
+        self.banner_rect.centery = self.screen_rect.centery - 20
 
     def prep_banner_mid(self):
         self.banner_mid_img = pygame.image.load('images/banner_mid.png').convert_alpha()
         self.banner_mid_rect = self.banner_mid_img.get_rect()
         self.banner_mid_rect.centerx = self.screen_rect.centerx - 20
-        self.banner_mid_rect.centery = self.screen_rect.centery - 110
+        self.banner_mid_rect.centery = self.screen_rect.centery - 10
 
     def prep_instructions(self, instructions_str):
         """Generate message on how to start game"""
@@ -74,7 +74,7 @@ class SplashScreen:
 
         self.headline_rect = self.headline_image.get_rect()
         self.headline_rect.centerx = self.screen_rect.centerx
-        self.headline_rect.centery = self.screen_rect.centery - 100
+        self.headline_rect.centery = self.screen_rect.centery
 
     def draw_splash_screen(self):
         """Draw all splash screen contents"""

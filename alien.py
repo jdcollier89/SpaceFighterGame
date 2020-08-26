@@ -8,7 +8,6 @@ class Alien(Sprite):
     def __init__(self, ai_settings, screen):
         """Initialize the alien and set its starting position"""
         super().__init__() # Initialize Sprite
-        #super(Alien, self).__init__() # Initialize Sprite
         self.screen = screen
         self.ai_settings = ai_settings
 
